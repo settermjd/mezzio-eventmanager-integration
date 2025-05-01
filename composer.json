@@ -1,0 +1,68 @@
+{
+    "name": "settermjd/mezzio-eventmanager-integration",
+    "description": "This is a small package that simplifies integrating laminas-eventmanager with Mezzio projects built with the Mezzio Skeleton.",
+    "keywords": [
+        "laminas",
+        "mezzio",
+        "laminas-eventmanager",
+        "psr",
+        "psr-7",
+        "psr-11",
+        "psr-15"
+    ],
+    "license": "BSD-3-Clause",
+    "support": {
+        "docs": "https://github.com/settermjd/mezzio-eventmanager-integration/docs",
+        "issues": "https://github.com/settermjd/mezzio-eventmanager-integration/issues",
+        "source": "https://github.com/settermjd/mezzio-eventmanager-integration"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "laminas/laminas-component-installer": true
+        }
+    },
+    "require": {
+        "php": "^8.3 || ^8.4",
+        "laminas/laminas-eventmanager": "^3.14",
+        "laminas/laminas-servicemanager": "^4.4",
+        "psr/container": "^2.0"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "^3.0",
+        "phpstan/phpdoc-parser": "^2.1",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpunit/phpunit": "^12.1",
+        "squizlabs/php_codesniffer": "^3.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "EventManagerIntegration\\": "src/EventManager/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EventManagerIntegrationTest\\": "test/EventManager/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@composer validate",
+            "@cs-check",
+            "@static-analysis",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "static-analysis": "phpstan analyse -l 10 src test",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    },
+    "scripts-descriptions": {
+        "static-analysis": "Run static analysis tool PHPStan."
+    }
+
+}
