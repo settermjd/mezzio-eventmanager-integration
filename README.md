@@ -47,6 +47,32 @@ return [
         ],
     ],
 ];
+
+return [
+    'listeners' => [
+        'add-item' => [
+            [
+                'listener' => FakeLoggerListener::class,
+                'priority' => 10,
+            ],
+            [
+                'listener' => FakeNotificationListener::class,
+                'priority' => 10,
+            ]
+        ],
+        'update-item' => [
+           [
+                'listener' => FakeLoggerListener::class,
+           ]
+        ],
+        'delete-item' => [
+            [
+                'listener' => FakeLoggerListener::class,
+                'priority' => 10,
+            ],
+        ],
+    ],
+];
 ```
 
 Assuming the configuration above, `FakeLoggerListener` and `FakeNotificationListener` are now listening for (or subscribed to) the "test-event" event.

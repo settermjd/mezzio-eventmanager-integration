@@ -7,8 +7,8 @@ namespace EventManagerIntegrationTest\Container;
 use EventManagerIntegration\Container\ListenerConfigurationDelegator;
 use EventManagerIntegration\Container\ServiceNotFoundException;
 use EventManagerIntegrationTest\InMemoryContainer;
-use EventManagerIntegrationTest\Listeners\FakeLoggerListener;
-use EventManagerIntegrationTest\Listeners\FakeNotificationListener;
+use EventManagerIntegrationTest\Listener\FakeLoggerListener;
+use EventManagerIntegrationTest\Listener\FakeNotificationListener;
 use Laminas\EventManager\EventManager;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -64,16 +64,7 @@ class ListenerConfigurationDelegatorTest extends TestCase
 
         $this->container
             ->set('config', [
-                'lesteners' => [
-                    FakeLoggerListener::class       => [
-                        'event'    => 'test-event',
-                        'priority' => 10,
-                    ],
-                    FakeNotificationListener::class => [
-                        'event'    => 'test-event',
-                        'priority' => 20,
-                    ],
-                ],
+                'lesteners' => [],
             ]);
 
         $eventManager = $delegator($this->container, EventManager::class, fn() => $this->createEventManager());
@@ -90,18 +81,34 @@ class ListenerConfigurationDelegatorTest extends TestCase
         $delegator = new ListenerConfigurationDelegator();
 
         $this->container
-            ->set('config', [
-                'listeners' => [
-                    FakeLoggerListener::class       => [
-                        'event'    => 'test-event',
-                        'priority' => 10,
+            ->set(
+                'config',
+                [
+                    'listeners' => [
+                        'add-item'    => [
+                            [
+                                'listener' => FakeLoggerListener::class,
+                                'priority' => 10,
+                            ],
+                            [
+                                'listener' => FakeNotificationListener::class,
+                                'priority' => 10,
+                            ],
+                        ],
+                        'update-item' => [
+                            [
+                                'listener' => FakeLoggerListener::class,
+                            ],
+                        ],
+                        'delete-item' => [
+                            [
+                                'listener' => FakeLoggerListener::class,
+                                'priority' => 10,
+                            ],
+                        ],
                     ],
-                    FakeNotificationListener::class => [
-                        'event'    => 'test-event',
-                        'priority' => 20,
-                    ],
-                ],
-            ]);
+                ]
+            );
         $this->container->set(FakeLoggerListener::class, new FakeLoggerListener());
 
         $eventManager = $delegator($this->container, EventManager::class, fn() => $this->createEventManager());
@@ -111,8 +118,8 @@ class ListenerConfigurationDelegatorTest extends TestCase
 
         /** @var array<string,array<int,array<int,callable>>> $events */
         $events = $property->getValue($eventManager);
-        $this->assertArrayHasKey('test-event', $events);
-        $this->assertCount(1, $events['test-event']);
+        $this->assertArrayHasKey('add-item', $events);
+        $this->assertCount(1, $events['add-item']);
         $this->assertEquals(
             [
                 10 => [
@@ -121,7 +128,7 @@ class ListenerConfigurationDelegatorTest extends TestCase
                     ],
                 ],
             ],
-            $events['test-event']
+            $events['add-item']
         );
     }
 
@@ -132,12 +139,14 @@ class ListenerConfigurationDelegatorTest extends TestCase
         $this->container
             ->set('config', [
                 'listeners' => [
-                    FakeLoggerListener::class       => [
-                        'event' => 'test-event',
-                    ],
-                    FakeNotificationListener::class => [
-                        'event'    => 'test-event',
-                        'priority' => 20,
+                    'add-item' => [
+                        [
+                            'listener' => FakeLoggerListener::class,
+                        ],
+                        [
+                            'listener' => FakeNotificationListener::class,
+                            'priority' => 20,
+                        ],
                     ],
                 ],
             ]);
@@ -151,8 +160,8 @@ class ListenerConfigurationDelegatorTest extends TestCase
 
         /** @var array<string,array<int,array<int,callable>>> $events */
         $events = $property->getValue($eventManager);
-        $this->assertArrayHasKey('test-event', $events);
-        $this->assertCount(2, $events['test-event']);
+        $this->assertArrayHasKey('add-item', $events);
+        $this->assertCount(2, $events['add-item']);
         $this->assertEquals(
             [
                 20                                               => [
@@ -166,7 +175,7 @@ class ListenerConfigurationDelegatorTest extends TestCase
                     ],
                 ],
             ],
-            $events['test-event']
+            $events['add-item']
         );
     }
 
@@ -177,42 +186,54 @@ class ListenerConfigurationDelegatorTest extends TestCase
         $this->container
             ->set('config', [
                 'listeners' => [
-                    FakeLoggerListener::class       => [
-                        'event'    => 'test-event',
-                        'priority' => 10,
+                    'add-item'    => [
+                        [
+                            'listener' => FakeLoggerListener::class,
+                            'priority' => 10,
+                        ],
+                        [
+                            'listener' => FakeNotificationListener::class,
+                            'priority' => 10,
+                        ],
                     ],
-                    FakeNotificationListener::class => [
-                        'event'    => 'test-event',
-                        'priority' => 20,
+                    'update-item' => [
+                        [
+                            'listener' => FakeLoggerListener::class,
+                        ],
+                    ],
+                    'delete-item' => [
+                        [
+                            'listener' => FakeLoggerListener::class,
+                            'priority' => 10,
+                        ],
                     ],
                 ],
             ]);
         $this->container->set(FakeLoggerListener::class, new FakeLoggerListener());
         $this->container->set(FakeNotificationListener::class, new FakeNotificationListener());
 
-        $eventManager = $delegator($this->container, EventManager::class, fn() => $this->createEventManager());
+        $eventManager = $delegator(
+            $this->container,
+            EventManager::class,
+            fn() => $this->createEventManager()
+        );
 
         $object   = new ReflectionClass($eventManager);
         $property = $object->getProperty('events');
 
         /** @var array<string,array<int,array<int,callable>>> $events */
         $events = $property->getValue($eventManager);
-        $this->assertArrayHasKey('test-event', $events);
-        $this->assertCount(2, $events['test-event']);
+        $this->assertArrayHasKey('add-item', $events);
         $this->assertEquals(
             [
                 10 => [
                     [
                         new FakeLoggerListener(),
-                    ],
-                ],
-                20 => [
-                    [
                         new FakeNotificationListener(),
                     ],
                 ],
             ],
-            $events['test-event']
+            $events['add-item']
         );
     }
 }

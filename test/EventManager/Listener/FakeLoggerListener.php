@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace EventManagerIntegrationTest\Listeners;
+namespace EventManagerIntegrationTest\Listener;
 
 use Laminas\EventManager\Event;
 
-class FakeNotificationListener
+class FakeLoggerListener
 {
     /**
      * @template TTarget of object|null

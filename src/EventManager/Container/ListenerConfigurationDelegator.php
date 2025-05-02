@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace EventManagerIntegration\Container;
 
+use ArrayIterator;
+use EventManagerIntegration\Iterator\ValidListenerFilterIterator;
 use Laminas\EventManager\EventManager;
 use Laminas\EventManager\EventManagerInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -12,7 +14,6 @@ use Psr\Container\NotFoundExceptionInterface;
 
 use function array_key_exists;
 use function gettype;
-use function is_callable;
 use function is_object;
 use function sprintf;
 
@@ -51,20 +52,17 @@ class ListenerConfigurationDelegator
             return $eventManager;
         }
 
-        /** @var array<class-string,array{'event': string, 'priority'?: int}> $listeners */
+        /** @var array<string,array<int,array{'listener': class-string, 'priority'?: int}>> $listeners */
         $listeners = (array) $config['listeners'];
         if ($listeners !== []) {
-            foreach ($listeners as $listener => $listenerConfig) {
-                if (! $container->has($listener)) {
-                    continue;
-                }
-
-                $listener = $container->get($listener);
-                if (is_callable($listener)) {
+            foreach ($listeners as $eventName => $eventListeners) {
+                $iterator = new ValidListenerFilterIterator(new ArrayIterator($eventListeners), $container);
+                foreach ($iterator as $eventListener) {
+                    $listener = $container->get($eventListener['listener']);
                     $eventManager->attach(
-                        eventName: $listenerConfig['event'],
+                        eventName: $eventName,
                         listener: $listener,
-                        priority: $listenerConfig['priority'] ?? self::DEFAULT_PRIORITY,
+                        priority: $eventListener['priority'] ?? self::DEFAULT_PRIORITY,
                     );
                 }
             }
