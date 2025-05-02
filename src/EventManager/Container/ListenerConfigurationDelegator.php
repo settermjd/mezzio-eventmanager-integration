@@ -51,21 +51,23 @@ class ListenerConfigurationDelegator
             return $eventManager;
         }
 
-        /** @var array<class-string,array{'event': string, 'priority'?: int}> $listeners */
+        /** @var array<string,array<int,array{'listener': class-string, 'priority'?: int}>> $listeners */
         $listeners = (array) $config['listeners'];
         if ($listeners !== []) {
-            foreach ($listeners as $listener => $listenerConfig) {
-                if (! $container->has($listener)) {
-                    continue;
-                }
+            foreach ($listeners as $eventName => $eventListeners) {
+                foreach ($eventListeners as $eventListener) {
+                    if (! $container->has($eventListener['listener'])) {
+                        continue;
+                    }
 
-                $listener = $container->get($listener);
-                if (is_callable($listener)) {
-                    $eventManager->attach(
-                        eventName: $listenerConfig['event'],
-                        listener: $listener,
-                        priority: $listenerConfig['priority'] ?? self::DEFAULT_PRIORITY,
-                    );
+                    $listener = $container->get($eventListener['listener']);
+                    if (is_callable($listener)) {
+                        $eventManager->attach(
+                            eventName: $eventName,
+                            listener: $listener,
+                            priority: $eventListener['priority'] ?? self::DEFAULT_PRIORITY,
+                        );
+                    }
                 }
             }
         }
