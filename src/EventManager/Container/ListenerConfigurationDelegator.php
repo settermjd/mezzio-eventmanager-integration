@@ -33,7 +33,7 @@ class ListenerConfigurationDelegator
         callable $callback
     ): EventManagerInterface {
         $eventManager = $callback();
-        if (! $eventManager instanceof EventManager) {
+        if (! $eventManager instanceof EventManagerInterface) {
             throw new ServiceNotFoundException(sprintf(
                 'Delegator factory %s cannot operate on a %s; please map it only to the %s service',
                 self::class,
