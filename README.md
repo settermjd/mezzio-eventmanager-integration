@@ -21,32 +21,21 @@ To use the package with an existing Mezzio application, use Composer to add the 
 composer require mezzio-eventmanager-integration
 ```
 
+### How to subscribe listeners to events
+
 Then, to subscribe listeners to events, you need to do two things:
 
-1. Add a `listeners` element to the application's configuration, listing the listeners to subscribe to an event, and the [priority][laminas-eventmanager-priority-url] to subscribe them at.
-   There are two things to be aware of here:
-     - If you don't assign a priority, a listener will be subscribed with a default priority of **1**.
-     - Higher priority values execute **earlier**.
-      Lower (negative) priority values execute **later**.
-1. The listeners must be registered as services in the DI container.
+1. Add a `listeners` element to the application's configuration, listing the events and the listeners that are subscribed to those events, along with the [priority][laminas-eventmanager-priority-url] to subscribe them at (which is optional).
+   There are three things to be aware of here:
+     - If you don't assign a priority, a listener will be subscribed with a default priority of **1**
+     - Higher priority values execute **earlier**
+     - Lower (negative) priority values execute **later**
+1. The listeners **must** be registered as services in the DI container.
 
-There are many ways to add a `listeners` element to the application's configuration, but likely the simplest is to create a new file in the _config/autoload_ directory named _listeners.global.php_, and in that file, add a configuration similar to the example below.
+There are many ways to add a `listeners` element to the application's configuration, but likely the simplest is to create a new file in the _config/autoload_ directory named _listeners.global.php_, and in that file add a configuration similar to the example below.
 
 ```php
 <?php
-
-return [
-    'listeners' => [
-        FakeLoggerListener::class       => [
-            'event'    => 'test-event',
-            'priority' => 10,
-        ],
-        FakeNotificationListener::class => [
-            'event'    => 'test-event',
-            'priority' => 20,
-        ],
-    ],
-];
 
 return [
     'listeners' => [
@@ -57,7 +46,7 @@ return [
             ],
             [
                 'listener' => FakeNotificationListener::class,
-                'priority' => 10,
+                'priority' => 20,
             ]
         ],
         'update-item' => [
@@ -67,7 +56,7 @@ return [
         ],
         'delete-item' => [
             [
-                'listener' => FakeLoggerListener::class,
+                'listener' => FakeNotificationListener::class,
                 'priority' => 10,
             ],
         ],
@@ -75,8 +64,13 @@ return [
 ];
 ```
 
-Assuming the configuration above, `FakeLoggerListener` and `FakeNotificationListener` are now listening for (or subscribed to) the "test-event" event.
-When the event is triggered, `FakeLoggerListener` will execute first, then `FakeNotificationListener` will execute (assuming that execution isn't [short-circuited][laminas-eventmanager-shortcircuiting-url]).
+Assuming the configuration above was used:
+
+- `FakeLoggerListener` and `FakeNotificationListener` are subscribed to the "add-item" event
+- `FakeLoggerListener` is subscribed to the "update-item" with a priority of "1" as a priority was not specified
+- `FakeNotificationListener` is subscribed to the "delete-item" event
+
+When the "add-item" event is triggered, `FakeLoggerListener` will execute first as it has a lower priority, then `FakeNotificationListener` will execute (assuming that execution isn't [short-circuited][laminas-eventmanager-shortcircuiting-url]).
 
 ## Contributing
 
