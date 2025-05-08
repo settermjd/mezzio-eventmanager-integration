@@ -92,8 +92,9 @@ No warranty expressed or implied. Software is as is.
 
 ---
 
-Made with 🖤 in Bundaberg by [Matthew Setter][matthewsetter-url].
+Made with 🖤 in [Bundaberg][bundaberg-googlemaps-url] by [Matthew Setter][matthewsetter-url].
 
+[bundaberg-googlemaps-url]: https://www.google.com/maps/place/Bundaberg+QLD+4670/@-24.8864739,152.2813914,13z/data=!3m1!4b1!4m6!3m5!1s0x6bebb93f0664d9a3:0x400eef17f20d7c0!8m2!3d-24.8660809!4d152.3488645!16s%2Fm%2F027cnr_?entry=ttu&g_ep=EgoyMDI1MDUwNS4wIKXMDSoASAFQAw%3D%3D
 [issues-url]: https://github.com/settermjd/mezzio-eventmanager-integration/issues/new/choose
 [laminas-eventmanager-priority-url]: https://docs.laminas.dev/laminas-eventmanager/tutorial/#keeping-it-in-order
 [laminas-eventmanager-shortcircuiting-url]: https://docs.laminas.dev/laminas-eventmanager/tutorial/#short-circuiting-listener-execution
