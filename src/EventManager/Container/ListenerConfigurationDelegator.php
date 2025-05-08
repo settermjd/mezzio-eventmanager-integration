@@ -14,6 +14,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 use function array_key_exists;
 use function gettype;
+use function is_callable;
 use function is_object;
 use function sprintf;
 
@@ -59,6 +60,9 @@ class ListenerConfigurationDelegator
                 $iterator = new ValidListenerFilterIterator(new ArrayIterator($eventListeners), $container);
                 foreach ($iterator as $eventListener) {
                     $listener = $container->get($eventListener['listener']);
+                    if (! is_callable($listener)) {
+                        continue;
+                    }
                     $eventManager->attach(
                         eventName: $eventName,
                         listener: $listener,
