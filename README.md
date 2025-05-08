@@ -90,9 +90,14 @@ If the project was useful, and you want to say thank you and/or support its acti
 
 No warranty expressed or implied. Software is as is.
 
+---
+
+Made with 🖤 in Bundaberg by [Matthew Setter][matthewsetter-url].
+
 [issues-url]: https://github.com/settermjd/mezzio-eventmanager-integration/issues/new/choose
 [laminas-eventmanager-priority-url]: https://docs.laminas.dev/laminas-eventmanager/tutorial/#keeping-it-in-order
 [laminas-eventmanager-shortcircuiting-url]: https://docs.laminas.dev/laminas-eventmanager/tutorial/#short-circuiting-listener-execution
+[matthewsetter-url]: https://matthewsetter.com
 [mezzio-url]: https://docs.mezzio.dev/mezzio/
 [mezzioessentials-url]: https://mezzioessentials.com
 [prs-url]: https://github.com/settermjd/mezzio-eventmanager-integration/pulls
