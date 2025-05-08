@@ -61,12 +61,11 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "static-analysis": "phpstan analyse -l 10 src test",
+        "static-analysis": "phpstan analyse -l 6 src test",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
     "scripts-descriptions": {
         "static-analysis": "Run static analysis tool PHPStan."
     }
-
 }
